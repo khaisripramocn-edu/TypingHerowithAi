@@ -34,22 +34,26 @@
         </div>
 
         <div class="menu-grid">
-            <button class="menu-card game-mode" onclick="showGameSetup()" style="grid-column: span 2;">
-                🎮 <br>เริ่มภารกิจปลูกป่า
-            </button>
-            <button class="menu-card knowledge-mode" onclick="openKnowledgeHub()">
-                📚 <br>คลังความรู้รักษ์โลก
-            </button>
-            <button class="menu-card sub-game-1" onclick="window.location.href='gabage_game.html'">
-                ♻️ <br>เกมแยกขยะ
-            </button>
-            <button class="menu-card blue" style="background: #3498db; color: white;" onclick="window.location.href='vocab.html'">
-                📖 <br>คำศัพท์น่ารู้
-            </button>
-            <button class="menu-card red" style="background: #e74c3c; color: white;" onclick="window.location.href='speed.html'">
-                💡 <br>เกมแยกขยะแบบเร็ว
-            </button>
-        </div> <div id="game-setup" class="setup-box" style="display:none; margin-top: 20px;">
+    <button class="menu-card game-mode" onclick="showGameSetup()" style="grid-column: span 2;">
+        🎮 <br>เริ่มภารกิจปลูกป่า
+    </button>
+    <button class="menu-card knowledge-mode" onclick="openKnowledgeHub()">
+        📚 <br>คลังความรู้รักษ์โลก
+    </button>
+    <button class="menu-card sub-game-1" onclick="window.location.href='gabage_game.html'">
+        ♻️ <br>เกมแยกขยะ
+    </button>
+    <button class="menu-card blue" style="background: #3498db; color: white;" onclick="window.location.href='vocab.html'">
+        📖 <br>คำศัพท์น่ารู้
+    </button>
+    <button class="menu-card red" style="background: #e74c3c; color: white;" onclick="window.location.href='speed.html'">
+        💡 <br>เกมแยกขยะแบบเร็ว
+    </button>
+</div> <div class="modal-actions">
+    <button class="btn btn-green" onclick="saveAsImage()">💾 บันทึกรูปภาพความสำเร็จ</button>
+    <button class="btn btn-cyan" onclick="location.reload()">🎮 เล่นอีกครั้ง</button>
+</div>
+         <div id="game-setup" class="setup-box" style="display:none; margin-top: 20px;">
             <h3>🔻 ตั้งค่าภารกิจ 🔻</h3>
             <div class="step-box">
                 <p>1. เลือกภาษา</p>
@@ -201,32 +205,41 @@
                 </div>
             </div>
             <div class="modal-actions">
+
                 <button class="btn btn-cyan" onclick="location.reload()">🎮 เล่นอีกครั้ง</button>
             </div>
         </div>
     </div>
 
+<div id="knowledge-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h2 style="color: var(--primary);">📚 สมุดภาพความรู้รักษ์โลก</h2>
+        
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchKnowledge('waste')">♻️ การแยกขยะ</button>
+            <button class="tab-btn" onclick="switchKnowledge('energy')">⚡ ประหยัดไฟ</button>
+            <button class="tab-btn" onclick="switchKnowledge('forest')">🌳 ป่าไม้</button>
+        </div>
 
-
-    <div id="knowledge-modal" class="modal" style="display:none;">
-        <div class="modal-content fade-in wide-modal">
-            <span class="close-btn" onclick="closeModal('knowledge-modal')">&times;</span>
-            <h2>📚 สมุดภาพความรู้รักษ์โลก</h2>
-            
-            <div class="knowledge-tabs">
-                <button class="tab-btn active" onclick="switchKnowledge('waste')">♻️ การแยกขยะ</button>
-                <button class="tab-btn" onclick="switchKnowledge('energy')">⚡ ประหยัดไฟ</button>
-                <button class="tab-btn" onclick="switchKnowledge('forest')">🌳 ป่าไม้</button>
+        <div id="content-waste" class="k-content" style="display:block; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="info-card green-card">
+                <h3>ถังเขียว (ขยะเปียก)</h3>
+                <p>เศษอาหาร, เปลือกผลไม้, ใบไม้ (ย่อยสลายได้)</p>
             </div>
-
-            <div id="content-waste" class="k-content active">
-                <div class="k-card green"><h3>ถังเขียว (ขยะเปียก)</h3><p>เศษอาหาร, เปลือกผลไม้, ใบไม้ (ย่อยสลายได้)</p></div>
-                <div class="k-card yellow"><h3>ถังเหลือง (รีไซเคิล)</h3><p>ขวดน้ำ, กระดาษ, กล่องลัง, กระป๋อง</p></div>
-                <div class="k-card red"><h3>ถังแดง (อันตราย)</h3><p>ถ่านไฟฉาย, หลอดไฟ, กระป๋องสเปรย์</p></div>
-                <div class="k-card blue"><h3>ถังฟ้า (ทั่วไป)</h3><p>ถุงพลาสติกเปื้อน, ซองขนม, โฟม</p></div>
+            <div class="info-card yellow-card">
+                <h3>ถังเหลือง (รีไซเคิล)</h3>
+                <p>ขวดน้ำ, กระดาษ, กล่องลัง, กระป๋อง</p>
             </div>
-
-            <div id="content-energy" class="k-content" style="display:none;">
+            <div class="info-card red-card">
+                <h3>ถังแดง (อันตราย)</h3>
+                <p>ถ่านไฟฉาย, หลอดไฟ, กระป๋องสเปรย์</p>
+            </div>
+            <div class="info-card blue-card">
+                <h3>ถังฟ้า (ทั่วไป)</h3>
+                <p>ถุงพลาสติกเปื้อน, ซองขนม, โฟม</p>
+            </div>
+        </div>
+ <div id="content-energy" class="k-content" style="display:none;">
                 <div class="k-card purple"><h3>ปิดเมื่อไม่ใช้</h3><p>ปิดไฟและพัดลมทุกครั้งเมื่อออกจากห้อง</p></div>
                 <div class="k-card purple"><h3>อุณหภูมิที่พอดี</h3><p>เปิดแอร์ 26 องศา ประหยัดไฟและเย็นสบาย</p></div>
                 <div class="k-card purple"><h3>แสงธรรมชาติ</h3><p>ตอนกลางวันเปิดม่านรับแสง แทนการเปิดไฟ</p></div>
@@ -237,8 +250,10 @@
                 <div class="k-card cyan"><h3>รากไม้</h3><p>ช่วยยึดหน้าดิน ป้องกันน้ำท่วมและดินถล่ม</p></div>
                 <div class="k-card cyan"><h3>ลดโลกร้อน</h3><p>ป่าไม้ช่วยปรับอุณหภูมิโลกให้สมดุล</p></div>
             </div>
-        </div>
+        <button class="btn btn-gray" onclick="closeModal('knowledge-modal')" style="margin-top:20px;">ปิดหน้าต่าง</button>
     </div>
+</div>
+
 
     <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
