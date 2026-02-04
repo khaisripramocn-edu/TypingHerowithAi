@@ -52,7 +52,6 @@ body {
 /* --- Banner (Fix 2000x392) --- */
 .site-banner {
     width: 100%;
-    /* ล็อคสัดส่วนตามภาพต้นฉบับเพื่อให้เห็นภาพเต็มผืน */
     aspect-ratio: 2000 / 392; 
     background-color: #f0f0f0;
     overflow: hidden;
@@ -245,3 +244,75 @@ body {
 /* เพิ่มสีปุ่มใหม่ๆ ใน style.css */
 .blue { background: #74b9ff; } /* สีฟ้าสำหรับทะเล */
 .red { background: #ff7675; }  /* สีแดงสำหรับพลังงาน/อันตราย */
+.word-chip {
+    display: inline-block;
+    padding: 5px 12px;
+    margin: 4px;
+    border: 2px solid;
+    border-radius: 20px;
+    background: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+/* --- แก้ไขตัว Modal ให้มีพื้นหลังสีขาวชัดเจน ไม่โปร่งแสงทับซ้อน --- */
+.modal-content {
+    background: #ffffff !important; /* บังคับให้เป็นสีขาว */
+    padding: 30px;
+    border-radius: 25px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto; /* เพิ่ม Scrollbar ถ้าเนื้อหายาว */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+    color: #2d3436; /* สีตัวอักษรให้เข้มขึ้น */
+}
+
+/* --- จัดการเนื้อหาคลังความรู้ (Knowledge Content) --- */
+.k-content {
+    display: none; /* ปิดไว้ก่อน */
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: #f9f9f9; /* สีพื้นหลังของการ์ดเนื้อหา */
+    animation: fadeIn 0.3s ease;
+}
+
+/* เพิ่มสไตล์ให้การ์ดความรู้ย่อยๆ (เช่น ถังขยะแต่ละสี) */
+.info-card {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    border-left: 8px solid #ccc; /* เส้นข้างแสดงสี */
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* กำหนดสีตามประเภท (ตัวอย่างการใส่สี) */
+.green-card { border-left-color: #2ecc71; } /* สีเขียว */
+.yellow-card { border-left-color: #f1c40f; } /* สีเหลือง */
+.red-card { border-left-color: #e74c3c; }    /* สีแดง */
+.blue-card { border-left-color: #3498db; }   /* สีฟ้า */
+
+/* ปุ่ม Tab เลือกเมนูความรู้ */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    background: #eee;
+    transition: 0.3s;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+}
