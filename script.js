@@ -167,18 +167,20 @@ function startGame(diff) {
     drawWord();
 }
 
+// แก้ไขฟังก์ชัน drawWord ให้ดึงข้อมูลได้ถูกต้อง
 function drawWord() {
-    if(!vocabulary[cLang]?.[cGrade]?.[cDiff]) {
-        alert("ข้อมูลมีปัญหา รีเซ็ตระบบ..."); emergencyReset(); return;
+    // ตรวจสอบความปลอดภัยของข้อมูล
+    if(!vocabulary[cLang] || !vocabulary[cLang][cGrade] || !vocabulary[cLang][cGrade][cDiff]) {
+        alert("ไม่พบข้อมูลคำศัพท์ กรุณารีเซ็ตระบบ");
+        return;
     }
 
     const fullList = vocabulary[cLang][cGrade][cDiff];
     let available = fullList.filter(w => !usedWords.includes(w));
     
-    // ถ้าคำหมด ให้วนกลับมาใช้คำเดิม
     if(available.length === 0) {
-        if(fullList.length === 0) { document.getElementById('wordDisplay').innerText = "EMPTY"; return; }
-        usedWords = []; available = fullList;
+        usedWords = []; 
+        available = fullList;
     }
     
     const word = available[Math.floor(Math.random() * available.length)];
@@ -191,7 +193,6 @@ function drawWord() {
     input.value = '';
     input.focus();
 }
-
 function speakWord(w) {
     const wordToSpeak = w || document.getElementById('wordDisplay').innerText;
     if(wordToSpeak === '...') return;
