@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมแยกขยะ - ช่วยสิ่งแวดล้อม</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            /* ธีมสีธรรมชาติ - เขียว น้ำตาล ครีม */
+            background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #90B98F 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid #D4A574;
+        }
+
+        /* ส่วนหัวของเกม */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* แสดงคะแนน */
+        .score-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .score-box, .level-box, .timer-box {
+            background: linear-gradient(135deg, #90B98F 0%, #6FA86D 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .score-box h2, .level-box h2, .timer-box h2 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .score-box p, .level-box p, .timer-box p {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* ส่วนเล่นเกม */
+        .game-area {
+            background: linear-gradient(135deg, #FFF8DC 0%, #F5F1E8 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        /* ขยะที่ต้องลง */
+        .garbage-display {
+            background: white;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .garbage-item {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .garbage-name {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .garbage-info {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* ถังขยะ */
+        .bins-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .bin {
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .bin:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .bin.active {
+            transform: scale(0.95);
+        }
+
+        /* สีของแต่ละถัง */
+        .bin.general {
+            border-color: #90B98F;
+            background: rgba(144, 185, 143, 0.1);
+        }
+
+        .bin.recycle {
+            border-color: #D4A574;
+            background: rgba(212, 165, 116, 0.1);
+        }
+
+        .bin.wet {
+            border-color: #8B9DC3;
+            background: rgba(139, 157, 195, 0.1);
+        }
+
+        .bin.hazard {
+            border-color: #C65D3B;
+            background: rgba(198, 93, 59, 0.1);
+        }
+
+        .bin-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .bin-label {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* ข้อความป้อนกลับ */
+        .feedback {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            min-height: 30px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .feedback.correct {
+            color: #90B98F;
+        }
+
+        .feedback.incorrect {
+            color: #C65D3B;
+        }
+
+        /* ปุ่ม */
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #90B98F 0%, #6FA86D 100%);
+            color: white;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(144, 185, 143, 0.3);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #D4A574 0%, #8B7355 100%);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 165, 116, 0.3);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        /* หน้าจอเริ่มต้น */
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .start-screen p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .emoji-welcome {
+            font-size: 3em;
+            margin: 20px 0;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        /* หน้าจอจบเกม */
+        .end-screen {
+            text-align: center;
+        }
+
+        .end-screen h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, #D4A574 0%, #C8935A 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .end-screen p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .emoji-end {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        /* ซ่อน/แสดง */
+        .hidden {
+            display: none;
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);
+            color: white;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 115, 85, 0.4);
+        }
+
+        .btn-home:active {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .btn-home {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .garbage-item {
+                font-size: 3em;
+            }
+
+            .bins-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .score-container {
+                flex-direction: column;
+            }
+
+            .score-box, .level-box, .timer-box {
+                min-width: 100%;
+            }
+        
+
+        /* โหลด */
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #e8f5e9;
+            border-left: 5px solid #2ecc71;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: #27ae60;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- ปุ่มกลับไปหน้าแรก -->
+    <a href="index.html" class="btn-home">🏠 กลับหน้าแรก</a>
+
+    <div class="container">
+        <!-- หน้าจอเริ่มต้น -->
+        <div id="startScreen" class="start-screen">
+            <h1>🌍 เกมแยกขยะ 🌍</h1>
+            <div class="emoji-welcome">♻️</div>
+            <h2>ช่วยสิ่งแวดล้อมกัน!</h2>
+            <p>ยินดีต้อนรับสู่เกมการศึกษา</p>
+            <p>ลากหรือคลิกขยะลงในถังที่ถูกต้อง</p>
+            <p style="color: #27ae60; font-size: 0.95em;">⏱️ เวลาเล่น: 60 วินาที | 📚 คำถาม: 65 ชิ้น | 🎯 ท้าทายตัวเองให้ได้แต้มสูงที่สุด!</p>
+            
+            <div class="button-container" style="margin-top: 30px;">
+                <button class="btn-start" onclick="startGame()">เริ่มเล่น 🎮</button>
+                <a href="index.html" style="text-decoration: none;">
+                    <button class="btn-reset" style="background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);">กลับหน้าแรก 🏠</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- หน้าจอเล่นเกม -->
+        <div id="gameScreen" class="hidden">
+            <!-- หัวเรื่อง -->
+            <div class="header">
+                <h1>🎯 เกมแยกขยะ</h1>
+            </div>
+
+            <!-- แสดงคะแนน ด่าน และเวลา -->
+            <div class="score-container">
+                <div class="score-box">
+                    <h2>📊 คะแนน</h2>
+                    <p id="score">0</p>
+                </div>
+                <div class="level-box">
+                    <h2>⭐ ด่าน</h2>
+                    <p id="level">1</p>
+                </div>
+                <div class="timer-box">
+                    <h2>⏱️ เหลือ</h2>
+                    <p id="timer">60</p>
+                </div>
+            </div>
+
+            <!-- ส่วนเล่นเกม -->
+            <div class="game-area">
+                <div class="game-title">ข้อเท็จจริง: <span id="garbageType"></span></div>
+                
+                <!-- ขยะที่ต้องลง -->
+                <div class="garbage-display">
+                    <div class="garbage-item" id="garbageItem">♻️</div>
+                    <div class="garbage-name" id="garbageName">รอขยะชิ้นใหม่...</div>
+                    <div class="garbage-info" id="garbageInfo"></div>
+                </div>
+
+                <!-- ข้อความป้อนกลับ -->
+                <div class="feedback" id="feedback"></div>
+
+                <!-- ถังขยะ -->
+                <div class="bins-container">
+                    <div class="bin general" onclick="selectBin('general')">
+                        <div class="bin-icon">🟩</div>
+                        <div class="bin-label">ขยะทั่วไป</div>
+                    </div>
+                    <div class="bin recycle" onclick="selectBin('recycle')">
+                        <div class="bin-icon">🟨</div>
+                        <div class="bin-label">ขยะรีไซเคิล</div>
+                    </div>
+                    <div class="bin wet" onclick="selectBin('wet')">
+                        <div class="bin-icon">🟦</div>
+                        <div class="bin-label">ขยะเปียก/อาหาร</div>
+                    </div>
+                    <div class="bin hazard" onclick="selectBin('hazard')">
+                        <div class="bin-icon">🟥</div>
+                        <div class="bin-label">ขยะอันตราย</div>
+                    </div>
+                </div>
+
+                <!-- ปุ่มควบคุม -->
+                <div class="button-container">
+                    <button class="btn-reset" onclick="resetGame()">เริ่มใหม่ 🔄</button>
+                    <a href="index.html" style="text-decoration: none;">
+                        <button class="btn-reset" style="background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);">กลับหน้าแรก 🏠</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าจอจบเกม -->
+        <div id="endScreen" class="hidden end-screen">
+            <h2>🎉 ยอดเยี่ยม! 🎉</h2>
+            <p>คุณจบเกมนี้แล้ว</p>
+            <div class="final-score" id="finalScore">0 คะแนน</div>
+            <p id="finalMessage">คุณได้เรียนรู้อะไรจากเกมนี้หรือไม่?</p>
+            <div class="emoji-end">🌱 🌿 🌾</div>
+            
+            <div class="info-box">
+                <strong>📊 ข้อมูลเกมของคุณ:</strong><br>
+                ⏱️ เวลาเล่น: 60 วินาที<br>
+                📚 คำถาม: 65 ชิ้น (รีไซเคิล 15, เปียก 18, อันตราย 15, ทั่วไป 17)<br>
+                🎯 คะแนนเต็ม: ประมาณ 195 คะแนน (ถ้าแยกถูกทั้งหมด)
+            </div>
+            
+            <p style="color: #999; font-size: 0.95em; margin-top: 15px;">การแยกขยะช่วยสิ่งแวดล้อมและโลกของเรา!</p>
+            
+            <div class="button-container" style="margin-top: 30px;">
+                <button class="btn-start" onclick="startGame()">เล่นอีกครั้ง 🎮</button>
+                <a href="index.html" style="text-decoration: none;">
+                    <button class="btn-reset" style="background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);">กลับหน้าแรก 🏠</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====== ตัวแปรจำกัดของเกม ======
+        let score = 0;                    // คะแนนปัจจุบัน
+        let currentLevel = 1;             // ด่านปัจจุบัน
+        let timeLeft = 60;                // เวลาคงเหลือ (เพิ่มจาก 30 เป็น 60)
+        let gameActive = false;           // สถานะการเล่นเกม
+        let currentGarbage = null;        // ขยะชิ้นปัจจุบัน
+        let timerInterval = null;         // ตัวแปรเก็บ interval ของเวลา
+        let garbageCount = 0;             // นับจำนวนขยะที่แยก
+
+        // ====== ข้อมูลขยะ ======
+        // รูปแบบ: {ชื่อไทย, emoji, ประเภท, ข้อมูลเพิ่มเติม}
+        // เพิ่มจำนวน: รวม 65 ชิ้น (รีไซเคิล 15, เปียก 18, อันตราย 15, ทั่วไป 17)
+        const garbageDatabase = [
+            // ขยะรีไซเคิล (เหลือง) - 15 ชิ้น
+            // รีไซเคิลสามารถใช้ใหม่ได้ เช่น พลาสติก กระดาษ โลหะ แก้ว
+            { name: 'ขวดน้ำพลาสติก', emoji: '🍾', type: 'recycle', info: 'ขวดพลาสติกสามารถรีไซเคิลได้' },
+            { name: 'กล่องกระดาษ', emoji: '📦', type: 'recycle', info: 'กระดาษสามารถรีไซเคิลได้' },
+            { name: 'สาระ อลูมิเนียม', emoji: '🥫', type: 'recycle', info: 'โลหะสามารถรีไซเคิลได้' },
+            { name: 'ขวดแก้ว', emoji: '🍷', type: 'recycle', info: 'แก้วสามารถรีไซเคิลได้' },
+            { name: 'หนังสือพิมพ์', emoji: '📰', type: 'recycle', info: 'กระดาษข่าวสามารถรีไซเคิลได้' },
+            { name: 'กล่องเครื่องดื่มพลาสติก', emoji: '🧃', type: 'recycle', info: 'น้ำสมมีพลาสติก' },
+            { name: 'ก้านเหล็กเก่า', emoji: '📌', type: 'recycle', info: 'เหล็กสามารถรีไซเคิลได้' },
+            { name: 'นิตยสาร', emoji: '📗', type: 'recycle', info: 'นิตยสารรีไซเคิลได้' },
+            { name: 'กระดาษห่อของ', emoji: '📄', type: 'recycle', info: 'กระดาษห่อรีไซเคิลได้' },
+            { name: 'ถุงพลาสติกสะอาด', emoji: '🛍️', type: 'recycle', info: 'ถุงพลาสติกสะอาด' },
+            { name: 'บทความกระดาษ', emoji: '📃', type: 'recycle', info: 'กระดาษเหลือใช้' },
+            { name: 'ลังไม้', emoji: '📫', type: 'recycle', info: 'ไม้รีไซเคิลได้' },
+            { name: 'ก้อนน้ำแข็ง', emoji: '🧊', type: 'recycle', info: 'พลาสติกรีไซเคิล' },
+            { name: 'กล่องอลูมิเนียมเก่า', emoji: '🥤', type: 'recycle', info: 'อลูมิเนียมหลอมได้' },
+            { name: 'กล่องแข็ง', emoji: '📮', type: 'recycle', info: 'กล่องแข็งรีไซเคิล' },
+
+            // ขยะเปียก/อาหาร (น้ำเงิน) - 18 ชิ้น
+            // เศษอาหารสามารถแยกสลายตัวเป็นปุ๋ยหรือเบ้ห์ก๊าซชีวภาพได้
+            { name: 'เศษอาหาร', emoji: '🍗', type: 'wet', info: 'เศษอาหารเป็นขยะเปียก' },
+            { name: 'เปลือกกล้วย', emoji: '🍌', type: 'wet', info: 'เปลือกผลไม้เปียก' },
+            { name: 'กากชา', emoji: '☕', type: 'wet', info: 'เศษชาเปียก' },
+            { name: 'กระดูกสัตว์', emoji: '🦴', type: 'wet', info: 'กระดูกเป็นขยะเปียก' },
+            { name: 'เปลือกไข่', emoji: '🥚', type: 'wet', info: 'เปลือกไข่เปียก' },
+            { name: 'เปลือกส้ม', emoji: '🍊', type: 'wet', info: 'เปลือกส้มเปียก' },
+            { name: 'เปลือกกุ้ง', emoji: '🦐', type: 'wet', info: 'เปลือกกุ้งเปียก' },
+            { name: 'ผักเสีย', emoji: '🥬', type: 'wet', info: 'ผักสดเปียก' },
+            { name: 'แกนข้าวโพด', emoji: '🌽', type: 'wet', info: 'แกนข้าวโพดเปียก' },
+            { name: 'เปลือกมันเทศ', emoji: '🥔', type: 'wet', info: 'เปลือกมันเปียก' },
+            { name: 'กากกาแฟ', emoji: '☕', type: 'wet', info: 'กากกาแฟเปียก' },
+            { name: 'เศษนม', emoji: '🥛', type: 'wet', info: 'เศษนมเปียก' },
+            { name: 'เศษเนื้อสัตว์', emoji: '🥩', type: 'wet', info: 'เนื้อเปียก' },
+            { name: 'เมล็ดมะเขือ', emoji: '🍅', type: 'wet', info: 'เมล็ดมะเขือเปียก' },
+            { name: 'เศษผลไม้', emoji: '🍎', type: 'wet', info: 'ผลไม้เปียก' },
+            { name: 'เหงือกปลา', emoji: '🐟', type: 'wet', info: 'เหงือกปลาเปียก' },
+            { name: 'กากสับปะรด', emoji: '🍍', type: 'wet', info: 'กากสับปะรดเปียก' },
+            { name: 'เปลือกถั่ว', emoji: '🥜', type: 'wet', info: 'เปลือกถั่วเปียก' },
+
+            // ขยะอันตราย (แดง) - 15 ชิ้น
+            // ขยะชนิดนี้มีสารพิษหรือเคมีอันตราย ต้องจัดการพิเศษ
+            { name: 'ถ่านไฟฉาย', emoji: '🔋', type: 'hazard', info: 'แบตเตอรี่มีสารพิษ' },
+            { name: 'หลอดไฟ', emoji: '💡', type: 'hazard', info: 'หลอดไฟมีปรอท' },
+            { name: 'ยาที่หมดอายุ', emoji: '💊', type: 'hazard', info: 'ยามีสารอันตราย' },
+            { name: 'เชื้อเพลิง', emoji: '⛽', type: 'hazard', info: 'น้ำมันติดไฟ' },
+            { name: 'สีที่หมดอายุ', emoji: '🎨', type: 'hazard', info: 'สีมีสารเคมี' },
+            { name: 'สารเคมีแรง', emoji: '🧪', type: 'hazard', info: 'สารเคมีอันตราย' },
+            { name: 'โทรศัพท์มือถือเก่า', emoji: '📱', type: 'hazard', info: 'แบตเตอรี่อันตราย' },
+            { name: 'หลอดนีออน', emoji: '💫', type: 'hazard', info: 'มีปรอท' },
+            { name: 'น้ำมันหล่อลื่น', emoji: '🛢️', type: 'hazard', info: 'น้ำมันอันตราย' },
+            { name: 'แบตเตอรี่รีโมท', emoji: '🎮', type: 'hazard', info: 'แบตเตอรี่เคมี' },
+            { name: 'ตลับหมึกพิมพ์', emoji: '🖨️', type: 'hazard', info: 'หมึกอันตราย' },
+            { name: 'หลอดแฟลช', emoji: '🔦', type: 'hazard', info: 'แบตเตอรี่อันตราย' },
+            { name: 'อุปกรณ์อิเล็กทรอนิกส์', emoji: '🖥️', type: 'hazard', info: 'โลหะหนัก' },
+            { name: 'ผลิตภัณฑ์ทำความสะอาด', emoji: '🧴', type: 'hazard', info: 'เคมีอันตราย' },
+            { name: 'น้ำเรียบเคมี', emoji: '⚗️', type: 'hazard', info: 'สารเคมีพิษ' },
+
+            // ขยะทั่วไป (เขียว) - 17 ชิ้น
+            // ขยะชนิดที่ไม่สามารถแยกประเภทอื่น เช่น ผ้า หนัง พลาสติกเสีย
+            { name: 'ถุงพลาสติกเสีย', emoji: '🛍️', type: 'general', info: 'ถุงที่เสีย' },
+            { name: 'ผ้าที่เสีย', emoji: '👕', type: 'general', info: 'ผ้าเสีย' },
+            { name: 'ดินสอหัก', emoji: '✏️', type: 'general', info: 'ดินสอหัก' },
+            { name: 'ปากกาหมดหมึก', emoji: '🖊️', type: 'general', info: 'ปากกาหมด' },
+            { name: 'ฟองน้ำเก่า', emoji: '🧽', type: 'general', info: 'ฟองน้ำเสีย' },
+            { name: 'รองเท้าเก่า', emoji: '👞', type: 'general', info: 'รองเท้าใช้ไม่ได้' },
+            { name: 'หมวกหลวม', emoji: '🧢', type: 'general', info: 'หมวกสึก' },
+            { name: 'ผ้าทำความสะอาด', emoji: '🧻', type: 'general', info: 'ผ้าเสีย' },
+            { name: 'หมอนเก่า', emoji: '🛌', type: 'general', info: 'หมอนเสีย' },
+            { name: 'เก้าอี้เก่า', emoji: '💺', type: 'general', info: 'เก้าอี้เสีย' },
+            { name: 'กระเป๋าผ้า', emoji: '🎒', type: 'general', info: 'กระเป๋าเสีย' },
+            { name: 'พู่กัน', emoji: '🎨', type: 'general', info: 'พู่กันสึก' },
+            { name: 'ของเล่นหัก', emoji: '🧸', type: 'general', info: 'ของเล่นหัก' },
+            { name: 'สายรัด', emoji: '⏱️', type: 'general', info: 'สายเสีย' },
+            { name: 'เชือกเก่า', emoji: '🪢', type: 'general', info: 'เชือกเก่า' },
+            { name: 'เข็มขัดหนัง', emoji: '⌚', type: 'general', info: 'เข็มขัดเสีย' },
+            { name: 'ไม้เหลือใช้', emoji: '🪵', type: 'general', info: 'ไม้ใช้ไม่ได้' },
+        ];
+
+        // ====== ฟังก์ชันจัดการเกม ======
+
+        // ฟังก์ชัน: เริ่มเกม
+        function startGame() {
+            score = 0;
+            currentLevel = 1;
+            timeLeft = 60;                // เวลา 60 วินาที
+            garbageCount = 0;
+            gameActive = true;
+
+            // ซ่อนหน้าจอเริ่มต้น แสดงหน้าเล่นเกม
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('endScreen').classList.add('hidden');
+
+            // อัปเดตคะแนนและแสดงขยะชิ้นแรก
+            updateDisplay();
+            nextGarbage();
+            startTimer();
+        }
+
+        // ฟังก์ชัน: เริ่มตัวจับเวลา
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+
+                // ถ้าเวลาหมด ให้จบเกม
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // ฟังก์ชัน: อัปเดตการแสดงผล
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('level').textContent = currentLevel;
+        }
+
+        // ฟังก์ชัน: แสดงขยะชิ้นถัดไป
+        function nextGarbage() {
+            if (!gameActive) return;
+
+            // สุ่มเลือกขยะจากฐานข้อมูล
+            const randomIndex = Math.floor(Math.random() * garbageDatabase.length);
+            currentGarbage = garbageDatabase[randomIndex];
+
+            // แสดงข้อมูลขยะ
+            document.getElementById('garbageItem').textContent = currentGarbage.emoji;
+            document.getElementById('garbageName').textContent = currentGarbage.name;
+            document.getElementById('garbageInfo').textContent = '💡 ' + currentGarbage.info;
+            document.getElementById('garbageType').textContent = currentGarbage.name;
+            document.getElementById('feedback').textContent = '';
+        }
+
+        // ฟังก์ชัน: เลือกถัง
+        function selectBin(binType) {
+            if (!gameActive || !currentGarbage) return;
+
+            const feedback = document.getElementById('feedback');
+
+            // ตรวจสอบว่าถูกหรือผิด
+            if (binType === currentGarbage.type) {
+                // ✅ ถูก
+                score += 10;
+                garbageCount++;
+                updateDisplay();
+
+                // ปรับระดับเมื่อแยกถูก 5 ชิ้น
+                if (garbageCount % 5 === 0) {
+                    currentLevel++;
+                }
+
+                // แสดงข้อความชมเชย
+                const compliments = [
+                    '🎉 เก่งมาก!',
+                    '⭐ แยกถูกแล้ว!',
+                    '👏 ยอดเยี่ยม!',
+                    '💯 สมบูรณ์แบบ!',
+                    '🌟 ปราดเปรื่อง!'
+                ];
+                const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+                feedback.textContent = randomCompliment;
+                feedback.className = 'feedback correct';
+
+                // เล่นเสียงสำเร็จ
+                playSound('correct');
+
+                // แสดงขยะชิ้นถัดไปหลังจาก 1 วินาที
+                setTimeout(() => {
+                    nextGarbage();
+                }, 1000);
+            } else {
+                // ❌ ผิด
+                const suggestions = [
+                    '🤔 ลองใหม่นะ!',
+                    '💭 คิดดูซ่ำนะ',
+                    '❌ ยังไม่ถูกนะ',
+                    '⚠️ ตรวจสอบให้ดี',
+                    '🔍 มองดูให้ดี'
+                ];
+                const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                feedback.textContent = randomSuggestion;
+                feedback.className = 'feedback incorrect';
+
+                // เล่นเสียงผิด
+                playSound('incorrect');
+            }
+        }
+
+        // ฟังก์ชัน: เล่นเสียง (ใช้ Web Audio API ง่าย ๆ)
+        function playSound(type) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                if (type === 'correct') {
+                    // เสียงสำเร็จ (เสียงขึ้น)
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                } else {
+                    // เสียงผิด (เสียงลง)
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(300, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                }
+            } catch (e) {
+                // ถ้าเสียงไม่ได้ ก็ไม่เป็นไร
+                console.log('เสียงไม่พร้อมใช้งาน');
+            }
+        }
+
+        // ฟังก์ชัน: จบเกม
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+
+            // ซ่อนหน้าเล่นเกม แสดงหน้าจบ
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('endScreen').classList.remove('hidden');
+
+            // แสดงคะแนนสุดท้าย
+            document.getElementById('finalScore').textContent = score + ' คะแนน';
+
+            // ข้อความสรุป (มีมากขึ้น)
+            let message = '';
+            let emoji = '';
+            if (score >= 170) {
+                message = '🏆 EXCELLENT! คุณเป็นเทพแยกขยะจริง ๆ!';
+                emoji = '👑';
+            } else if (score >= 140) {
+                message = '⭐ AMAZING! คุณเก่งจริง ๆ!';
+                emoji = '🌟';
+            } else if (score >= 110) {
+                message = '🥇 ยอดเยี่ยมมาก! บราโว!';
+                emoji = '🎊';
+            } else if (score >= 80) {
+                message = '🥈 ดีมากเลย! ตัวจริง!';
+                emoji = '👍';
+            } else if (score >= 50) {
+                message = '🥉 ดีขึ้นกว่าเดิมแล้ว!';
+                emoji = '💪';
+            } else if (score >= 20) {
+                message = '📚 ลองเล่นอีกครั้งเพื่อให้ดีขึ้น!';
+                emoji = '🎯';
+            } else {
+                message = '🔥 ลองอีกครั้ง! คงเพิ่มความเร็วได้!';
+                emoji = '⚡';
+            }
+
+            // อัปเดตข้อความบนหน้าจบ
+            document.getElementById('finalMessage').innerHTML = emoji + ' ' + message;
+        }
+
+        // ฟังก์ชัน: รีเซ็ตเกม
+        function resetGame() {
+            clearInterval(timerInterval);
+            startGame();
+        }
+
+        // ====== เอฟเฟกต์การดึง (Drag & Drop) ======
+        // (สำหรับเวอร์ชันขั้นสูง - ตอนนี้ใช้ click แล้ว)
+    </script>
+</body>
+</html>

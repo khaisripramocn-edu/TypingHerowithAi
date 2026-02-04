@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Hero Ultimate ฮีโร่พิทักษ์โลก 🌍</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <span>Typing Hero</span> <span class="ai-tag">With AI</span>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="goHome()">🏠 หน้าแรก</button>
+            <button class="nav-btn admin-btn" onclick="openAdminLogin()">⚙️ คุณครู</button>
+        </div>
+    </nav>
+
+    <div class="site-banner">
+        <img src="banner.png" onerror="this.src='https://via.placeholder.com/1200x300/6C5CE7/FFFFFF?text=Typing+Hero+Banner'" alt="Banner" class="banner-img">
+    </div>
+
+  <div id="home-page" class="page container fade-in">
+    <div class="card home-card">
+        <h1 class="hero-title">ฮีโร่พิทักษ์โลก 🦸‍♂️</h1>
+        <p class="hero-subtitle">พิมพ์ให้ไว ปลูกต้นไม้ให้โลกสีเขียว!</p>
+        
+        <div class="input-group">
+            <input type="text" id="student-name" placeholder="พิมพ์ชื่อฮีโร่ของหนู..." class="bubble-input">
+        </div>
+
+        <div class="menu-grid">
+            <button class="menu-card game-mode" onclick="showGameSetup()" style="grid-column: span 2;">
+                🎮 <br>เริ่มภารกิจปลูกป่า
+            </button>
+            <button class="menu-card knowledge-mode" onclick="openKnowledgeHub()">
+                📚 <br>คลังความรู้รักษ์โลก
+            </button>
+            <button class="menu-card sub-game-1" onclick="window.location.href='gabage_game.html'">
+                ♻️ <br>เกมแยกขยะ
+            </button>
+            <button class="menu-card blue" style="background: #3498db; color: white;" onclick="window.location.href='vocab.html'">
+                📖 <br>คำศัพท์น่ารู้
+            </button>
+            <button class="menu-card red" style="background: #e74c3c; color: white;" onclick="window.location.href='speed.html'">
+                💡 <br>เกมแยกขยะแบบเร็ว
+            </button>
+        </div> <div id="game-setup" class="setup-box" style="display:none; margin-top: 20px;">
+            <h3>🔻 ตั้งค่าภารกิจ 🔻</h3>
+            <div class="step-box">
+                <p>1. เลือกภาษา</p>
+                <button class="btn btn-purple" onclick="selectLang('th')">🇹🇭 ไทย</button>
+                <button class="btn btn-purple" onclick="selectLang('en')">🇬🇧 English</button>
+            </div>
+            <div id="grade-area" class="step-box" style="display:none;">
+                <p>2. เลือกระดับชั้น</p>
+                <button class="btn btn-cyan" onclick="selectGrade('K')">🧸 อนุบาล</button>
+                <button class="btn btn-cyan" onclick="selectGrade('P12')">🎒 ป.1-2</button>
+                <button class="btn btn-cyan" onclick="selectGrade('P3')">🚀 ป.3</button>
+            </div>
+            <div id="diff-area" class="step-box" style="display:none;">
+                <p>3. ความยาก</p>
+                <button class="btn btn-green" onclick="startGame('easy')">🌟 ง่าย</button>
+                <button class="btn btn-yellow" onclick="startGame('medium')">🔥 ปานกลาง</button>
+                <button class="btn btn-red" onclick="startGame('hard')">💎 ยาก</button>
+            </div>
+        </div>
+        
+        <div style="margin-top:20px;">
+            <button onclick="emergencyReset()" class="text-btn">⚠️ เกมค้าง? กดรีเซ็ตระบบ</button>
+        </div>
+    </div>
+</div>
+
+    <div id="game-page" class="page container" style="display:none;">
+    <div class="card glass-card game-layout">
+        <div class="game-header">
+            <div class="badge user-badge">👤 <span id="p-info">ฮีโร่</span></div>
+            <div class="badge score-badge">⭐ Combo: <span id="combo-count">0</span></div>
+            <div class="badge timer-badge" id="timer">⏱️ 0s</div>
+        </div>
+
+        <div class="tree-section">
+            <div class="tree-container">
+                <img id="tree-img" src="tree-1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/628/628283.png'" class="tree-visual">
+            </div>
+            <div class="progress-track">
+                <div id="progressBar" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="typing-section">
+            <button class="sound-btn" onclick="speakWord()">🔊 ฟังเสียง</button>
+            <div id="wordDisplay" class="word-bubble">...</div>
+            
+            <input type="text" id="typeInput" placeholder="พิมพ์ตามคำข้างบน..." class="bubble-input large-input" autocomplete="off">
+            <p class="hint-text">พิมพ์เสร็จกดปุ่ม <b>Enter</b> เลย!</p>
+        </div>
+
+        <button class="btn btn-gray quit-btn" onclick="goHome()">❌ เลิกเล่น</button>
+    </div>
+</div>
+
+    <div id="admin-page" class="page container" style="display:none;">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h2>⚙️ ห้องพักครู (Control Center)</h2>
+                <button class="btn btn-gray" onclick="goHome()">⬅️ กลับหน้าหลัก</button>
+            </div>
+            
+            <div class="admin-grid">
+                <div class="admin-card control-panel">
+                    <h3>➕ เพิ่มคำศัพท์ใหม่</h3>
+                    <div class="input-group-admin">
+                        <input type="text" id="new-word" placeholder="พิมพ์คำศัพท์ (คั่นด้วย ,)" class="bubble-input full-width">
+                    </div>
+                    
+                    <div class="filter-row">
+                        <div class="select-wrapper">
+                            <label>ภาษา</label>
+                            <select id="add-lang" class="modern-select"><option value="th">🇹🇭 ไทย</option><option value="en">🇬🇧 Eng</option></select>
+                        </div>
+                        <div class="select-wrapper">
+                            <label>ระดับชั้น</label>
+                            <select id="add-grade" class="modern-select"><option value="K">🧸 อนุบาล</option><option value="P12">🎒 ป.1-2</option><option value="P3">🚀 ป.3</option></select>
+                        </div>
+                        <div class="select-wrapper">
+                            <label>ความยาก</label>
+                            <select id="add-diff" class="modern-select"><option value="easy">🌟 ง่าย</option><option value="medium">🔥 กลาง</option><option value="hard">💎 ยาก</option></select>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-green wide" onclick="addNewWords()">💾 บันทึกข้อมูล</button>
+                        <button class="btn btn-red wide" onclick="resetVocabulary()">🔄 รีเซ็ตค่าเดิม</button>
+                    </div>
+                </div>
+
+                <div class="admin-card stats-panel">
+                    <div class="card-head">
+                        <h3>📊 ตารางคะแนนฮีโร่</h3>
+                        <button class="icon-btn trash" onclick="clearStats()" title="ล้างสถิติ">🗑️</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>ชื่อ</th>
+                                    <th>โหมด</th>
+                                    <th>เวลา</th>
+                                    <th>เกรด</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stats-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-card word-bank-panel">
+                    <div class="card-head">
+                        <h3>📖 คลังคำศัพท์ในระบบ</h3>
+                        <div class="view-filters">
+                            <select id="view-lang" class="modern-select small" onchange="renderWordBank()"><option value="th">🇹🇭 ไทย</option><option value="en">🇬🇧 Eng</option></select>
+                            <select id="view-grade" class="modern-select small" onchange="renderWordBank()"><option value="K">🧸 อนุบาล</option><option value="P12">🎒 ป.1-2</option><option value="P3">🚀 ป.3</option></select>
+                        </div>
+                    </div>
+                    <div id="word-bank-display" class="word-cloud-area">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-modal" class="modal" style="display:none;">
+        <div class="modal-content bounce-in" style="max-width: 300px; text-align:center;">
+            <h3>🔐 รหัสลับคุณครู</h3>
+            <input type="password" id="admin-pass" class="bubble-input" placeholder="ใส่รหัส (1234)">
+            <br><br>
+            <button class="btn btn-purple" onclick="checkAdminLogin()">ยืนยัน</button>
+            <button class="btn btn-gray" onclick="closeModal('login-modal')">ยกเลิก</button>
+        </div>
+    </div>
+
+    <div id="result-modal" class="modal" style="display:none;">
+        <div class="modal-content bounce-in prize-bg">
+            <div id="capture-area" class="result-card">
+                <div class="result-overlay">
+                    <h1>🏆 ภารกิจสำเร็จ!</h1>
+                    <div class="final-score">
+                        <div class="score-item">⏱️ เวลา: <span id="res-time"></span>s</div>
+                        <div class="score-item">🔥 Combo สูงสุด: <span id="res-combo"></span></div>
+                    </div>
+                    <div class="grade-stamp">เกรด <span id="res-grade">A</span></div>
+                    <p>ฮีโร่: <span id="res-name"></span></p>
+                    <p>คุณช่วยโลกปลูกต้นไม้ได้สำเร็จ! 🌳</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cyan" onclick="location.reload()">🎮 เล่นอีกครั้ง</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="knowledge-modal" class="modal" style="display:none;">
+        <div class="modal-content fade-in wide-modal">
+            <span class="close-btn" onclick="closeModal('knowledge-modal')">&times;</span>
+            <h2>📚 สมุดภาพความรู้รักษ์โลก</h2>
+            
+            <div class="knowledge-tabs">
+                <button class="tab-btn active" onclick="switchKnowledge('waste')">♻️ การแยกขยะ</button>
+                <button class="tab-btn" onclick="switchKnowledge('energy')">⚡ ประหยัดไฟ</button>
+                <button class="tab-btn" onclick="switchKnowledge('forest')">🌳 ป่าไม้</button>
+            </div>
+
+            <div id="content-waste" class="k-content active">
+                <div class="k-card green"><h3>ถังเขียว (ขยะเปียก)</h3><p>เศษอาหาร, เปลือกผลไม้, ใบไม้ (ย่อยสลายได้)</p></div>
+                <div class="k-card yellow"><h3>ถังเหลือง (รีไซเคิล)</h3><p>ขวดน้ำ, กระดาษ, กล่องลัง, กระป๋อง</p></div>
+                <div class="k-card red"><h3>ถังแดง (อันตราย)</h3><p>ถ่านไฟฉาย, หลอดไฟ, กระป๋องสเปรย์</p></div>
+                <div class="k-card blue"><h3>ถังฟ้า (ทั่วไป)</h3><p>ถุงพลาสติกเปื้อน, ซองขนม, โฟม</p></div>
+            </div>
+
+            <div id="content-energy" class="k-content" style="display:none;">
+                <div class="k-card purple"><h3>ปิดเมื่อไม่ใช้</h3><p>ปิดไฟและพัดลมทุกครั้งเมื่อออกจากห้อง</p></div>
+                <div class="k-card purple"><h3>อุณหภูมิที่พอดี</h3><p>เปิดแอร์ 26 องศา ประหยัดไฟและเย็นสบาย</p></div>
+                <div class="k-card purple"><h3>แสงธรรมชาติ</h3><p>ตอนกลางวันเปิดม่านรับแสง แทนการเปิดไฟ</p></div>
+            </div>
+
+            <div id="content-forest" class="k-content" style="display:none;">
+                <div class="k-card cyan"><h3>ต้นไม้ 1 ต้น</h3><p>ช่วยดูดซับคาร์บอนไดออกไซด์ได้ 9-15 กิโลกรัม/ปี</p></div>
+                <div class="k-card cyan"><h3>รากไม้</h3><p>ช่วยยึดหน้าดิน ป้องกันน้ำท่วมและดินถล่ม</p></div>
+                <div class="k-card cyan"><h3>ลดโลกร้อน</h3><p>ป่าไม้ช่วยปรับอุณหภูมิโลกให้สมดุล</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>

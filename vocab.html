@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมคำศัพท์ขยะ - เรียนรู้คำ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #90B98F 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid #D4A574;
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);
+            color: white;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 115, 85, 0.4);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #90B98F, #6FA86D);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .game-area {
+            background: linear-gradient(135deg, #FFF8DC 0%, #F5F1E8 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .vocab-display {
+            background: white;
+            border: 3px dashed #90B98F;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .vocab-emoji {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .vocab-english {
+            font-size: 1.8em;
+            color: #2D5016;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .vocab-type {
+            font-size: 0.9em;
+            color: #8B7355;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .buttons-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #90B98F 0%, #6FA86D 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(144, 185, 143, 0.3);
+        }
+
+        .btn-show {
+            background: linear-gradient(135deg, #D4A574 0%, #8B7355 100%);
+            color: white;
+        }
+
+        .btn-show:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 165, 116, 0.3);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #C65D3B 0%, #9B3E2A 100%);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(198, 93, 59, 0.3);
+        }
+
+        .start-screen, .end-screen {
+            text-align: center;
+        }
+
+        .start-screen h2, .end-screen h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .emoji-welcome {
+            font-size: 3em;
+            margin: 20px 0;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .vocab-list {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .vocab-item {
+            background: #FFF8DC;
+            border-left: 4px solid #90B98F;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .vocab-item strong {
+            color: #2D5016;
+        }
+
+        .vocab-item span {
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, #D4A574 0%, #C8935A 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .vocab-emoji {
+                font-size: 3em;
+            }
+
+            .buttons-area {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="btn-home">🏠 กลับหน้าแรก</a>
+
+    <div class="container">
+        <!-- หน้าจอเริ่มต้น -->
+        <div id="startScreen" class="start-screen">
+            <h1>📚 เกมคำศัพท์ขยะ 📚</h1>
+            <div class="emoji-welcome">🔤</div>
+            <h2>เรียนรู้คำศัพท์เกี่ยวกับการแยกขยะ!</h2>
+            <p style="color: #666; font-size: 1.1em; margin-bottom: 15px;">
+                สอนเด็ก ๆ ให้จำชื่อขยะภาษาอังกฤษและคำอธิบายความหมาย
+            </p>
+            <p style="color: #27ae60; font-size: 0.95em;">
+                📚 40+ คำศัพท์ | 🎯 ทั้งหมด 4 หมวดหมู่ | 💡 มีคำอธิบายง่าย ๆ
+            </p>
+
+            <div class="button-container">
+                <button class="btn-next" onclick="startGame()" style="grid-column: 1 / -1;">เริ่มเรียน 🚀</button>
+                <a href="index.html" style="text-decoration: none; flex: 1;">
+                    <button class="btn-reset" style="width: 100%;">กลับหน้าแรก 🏠</button>
+                </a>
+            </div>
+        </div>
+
+        <!-- หน้าจอเรียน -->
+        <div id="gameScreen" class="hidden">
+            <div class="header">
+                <h1>📚 เกมคำศัพท์ขยะ</h1>
+            </div>
+
+            <div class="progress-text">
+                <span id="progressText">1 / 40</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="game-area">
+                <div class="vocab-display">
+                    <div class="vocab-emoji" id="vocabEmoji">📦</div>
+                    <div class="vocab-english" id="vocabEnglish">GARBAGE</div>
+                    <div class="vocab-type" id="vocabType">ขยะทั่วไป</div>
+                    <div class="description" id="vocabDescription">
+                        ซ่อนอยู่ - คลิกปุ่มเพื่อดูคำอธิบาย
+                    </div>
+                </div>
+
+                <div class="buttons-area">
+                    <button class="btn-show" onclick="showDescription()">👁️ ดูคำอธิบาย</button>
+                    <button class="btn-show" onclick="pronunciation()" style="background: linear-gradient(135deg, #8B9DC3 0%, #6A7BA8 100%);">🔊 ออกเสียง</button>
+                </div>
+
+                <button class="btn-next" onclick="nextVocab()">ต่อไป →</button>
+
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="btn-reset" onclick="resetGame()" style="flex: 1; background: linear-gradient(135deg, #D4A574 0%, #8B7355 100%);">เริ่มใหม่ 🔄</button>
+                    <a href="index.html" style="text-decoration: none; flex: 1;">
+                        <button class="btn-reset" style="width: 100%; background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);">กลับหน้าแรก 🏠</button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="vocab-list">
+                <h3 style="color: #2D5016; margin-bottom: 15px;">📖 คำศัพท์ที่ได้เรียน:</h3>
+                <div id="vocabListContent"></div>
+            </div>
+        </div>
+
+        <!-- หน้าจบเกม -->
+        <div id="endScreen" class="hidden end-screen">
+            <h1>🎉 เย้! 🎉</h1>
+            <h2>เรียนจบแล้ว!</h2>
+            <p style="color: #666; font-size: 1.1em; margin-bottom: 15px;">
+                คุณได้เรียนรู้คำศัพท์เกี่ยวกับการแยกขยะไปแล้ว 40 คำ!
+            </p>
+
+            <div class="final-score">📚 40 คำศัพท์ ✅</div>
+
+            <p style="color: #555; margin-bottom: 20px;">
+                เด็ก ๆ ตอนนี้รู้คำศัพท์เกี่ยวกับขยะแล้ว<br>
+                พยายามใช้คำเหล่านี้ในการสนทนา!
+            </p>
+
+            <div class="button-container">
+                <button class="btn-next" onclick="startGame()">เรียนอีกครั้ง 📚</button>
+                <a href="garbage_game.html" style="text-decoration: none;">
+                    <button class="btn-reset" style="background: linear-gradient(135deg, #90B98F 0%, #6FA86D 100%);">เล่นเกมแยกขยะ 🎮</button>
+                </a>
+                <a href="index.html" style="text-decoration: none;">
+                    <button class="btn-reset" style="background: linear-gradient(135deg, #8B7355 0%, #D4A574 100%);">กลับหน้าแรก 🏠</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====== ข้อมูลคำศัพท์ ======
+        const vocabularyData = [
+            // ขยะรีไซเคิล
+            { english: 'RECYCLE', thai: 'รีไซเคิล', type: 'ขยะรีไซเคิล', emoji: '🟨', description: 'นำขยะมาใช้ใหม่และแปรรูป' },
+            { english: 'PLASTIC', thai: 'พลาสติก', type: 'ขยะรีไซเคิล', emoji: '🍾', description: 'วัสดุที่มาจากน้ำมันดิบ สามารถรีไซเคิลได้' },
+            { english: 'ALUMINUM', thai: 'อลูมิเนียม', type: 'ขยะรีไซเคิล', emoji: '🥫', description: 'โลหะเบา และสามารถหลอมใหม่ได้' },
+            { english: 'GLASS', thai: 'แก้ว', type: 'ขยะรีไซเคิล', emoji: '🍷', description: 'วัสดุใสที่สามารถหลอมใหม่ได้โดยไม่สูญเสียคุณภาพ' },
+            { english: 'PAPER', thai: 'กระดาษ', type: 'ขยะรีไซเคิล', emoji: '📰', description: 'มาจากไม้ สามารถนำมาทำกระดาษใหม่ได้' },
+            { english: 'METAL', thai: 'โลหะ', type: 'ขยะรีไซเคิล', emoji: '🔗', description: 'วัสดุแข็ง สามารถหลอมและแปรรูปใหม่ได้' },
+            { english: 'CARDBOARD', thai: 'กระดาษแข็ง', type: 'ขยะรีไซเคิล', emoji: '📦', description: 'กระดาษหนาที่ใช้ห่อสิ่งของ' },
+            { english: 'CONTAINER', thai: 'ภาชนะ', type: 'ขยะรีไซเคิล', emoji: '🧃', description: 'อะไรก็ตามที่ใช้ใส่ของ เช่น ขวด กล่อง' },
+
+            // ขยะเปียก
+            { english: 'FOOD WASTE', thai: 'เศษอาหาร', type: 'ขยะเปียก', emoji: '🍗', description: 'เศษอาหารที่เหลือจากการรับประทาน สลายตัวได้ง่าย' },
+            { english: 'ORGANIC', thai: 'อินทรีย์', type: 'ขยะเปียก', emoji: '🍌', description: 'สิ่งที่มาจากธรรมชาติ เช่น ผลไม้ ผัก กิ่งไม้' },
+            { english: 'COMPOST', thai: 'ปุ๋ยหมัก', type: 'ขยะเปียก', emoji: '🌱', description: 'ปุ๋ยธรรมชาติที่ทำจากขยะอินทรีย์' },
+            { english: 'VEGETABLE', thai: 'ผัก', type: 'ขยะเปียก', emoji: '🥬', description: 'พืชที่ปลูกเพื่อรับประทาน สลายตัวได้ง่าย' },
+            { english: 'FRUIT', thai: 'ผลไม้', type: 'ขยะเปียก', emoji: '🍎', description: 'ผลไม้ที่เป็นอาหาร เปลือกและเศษสามารถย่อยสลายได้' },
+            { english: 'BONE', thai: 'กระดูก', type: 'ขยะเปียก', emoji: '🦴', description: 'กระดูกสัตว์ สลายตัวช้าแต่เป็นขยะเปียก' },
+            { english: 'EGG SHELL', thai: 'เปลือกไข่', type: 'ขยะเปียก', emoji: '🥚', description: 'เปลือกของไข่ สามารถหมักเป็นปุ๋ยได้' },
+
+            // ขยะอันตราย
+            { english: 'HAZARDOUS', thai: 'อันตราย', type: 'ขยะอันตราย', emoji: '🟥', description: 'ขยะที่มีสารพิษและเป็นอันตรายต่อสิ่งแวดล้อม' },
+            { english: 'BATTERY', thai: 'แบตเตอรี่', type: 'ขยะอันตราย', emoji: '🔋', description: 'อุปกรณ์ที่ให้พลังงาน มีสารเคมีอันตราย' },
+            { english: 'CHEMICAL', thai: 'เคมี', type: 'ขยะอันตราย', emoji: '🧪', description: 'สารเคมีที่เป็นอันตรายต่อสิ่งแวดล้อมและคน' },
+            { english: 'PAINT', thai: 'สี', type: 'ขยะอันตราย', emoji: '🎨', description: 'สีทาที่มีสารพิษ ต้องทิ้งแบบพิเศษ' },
+            { english: 'MEDICINE', thai: 'ยา', type: 'ขยะอันตราย', emoji: '💊', description: 'ยาที่หมดอายุ ต้องจัดการแบบพิเศษ' },
+            { english: 'OIL', thai: 'น้ำมัน', type: 'ขยะอันตราย', emoji: '🛢️', description: 'น้ำมันหล่อลื่นหรือน้ำมันใช้แล้ว มีสารอันตราย' },
+            { english: 'LIGHT BULB', thai: 'หลอดไฟ', type: 'ขยะอันตราย', emoji: '💡', description: 'หลอดไฟมีปรอท ต้องจัดการด้วยความระมัดระวัง' },
+            { english: 'ELECTRONICS', thai: 'อิเล็กทรอนิกส์', type: 'ขยะอันตราย', emoji: '🖥️', description: 'อุปกรณ์อิเล็กทรอนิกส์ เก่า มีโลหะหนัก' },
+
+            // ขยะทั่วไป
+            { english: 'GENERAL WASTE', thai: 'ขยะทั่วไป', type: 'ขยะทั่วไป', emoji: '🟩', description: 'ขยะที่ไม่สามารถแยกประเภทอื่น' },
+            { english: 'TEXTILE', thai: 'ผ้า', type: 'ขยะทั่วไป', emoji: '👕', description: 'ผ้า เสื้อ กางเกง ที่ใช้ไม่ได้แล้ว' },
+            { english: 'RUBBER', thai: 'ยาง', type: 'ขยะทั่วไป', emoji: '👞', description: 'ยาง รองเท้า ที่สึกเสียแล้ว' },
+            { english: 'LEATHER', thai: 'หนัง', type: 'ขยะทั่วไป', emoji: '⌚', description: 'หนัง เข็มขัด กระเป๋า ที่เสีย' },
+            { english: 'CERAMIC', thai: 'เซรามิก', type: 'ขยะทั่วไป', emoji: '🍽️', description: 'จาน ชาม ที่แตก' },
+            { english: 'PENCIL', thai: 'ดินสอ', type: 'ขยะทั่วไป', emoji: '✏️', description: 'ดินสอที่หัก ใช้ไม่ได้' },
+            { english: 'PEN', thai: 'ปากกา', type: 'ขยะทั่วไป', emoji: '🖊️', description: 'ปากกาที่หมดหมึก ใช้ไม่ได้' },
+            { english: 'TOY', thai: 'ของเล่น', type: 'ขยะทั่วไป', emoji: '🧸', description: 'ของเล่นที่หัก ใช้ไม่ได้' },
+            { english: 'PLASTIC BAG', thai: 'ถุงพลาสติก', type: 'ขยะทั่วไป', emoji: '🛍️', description: 'ถุงพลาสติกเสีย ใช้ไม่ได้ (ไม่ใช่รีไซเคิล)' },
+            { english: 'FOAM', thai: 'ฟองน้ำ', type: 'ขยะทั่วไป', emoji: '🧽', description: 'ฟองน้ำที่หาย ใช้ไม่ได้' },
+            { english: 'PILLOW', thai: 'หมอน', type: 'ขยะทั่วไป', emoji: '🛌', description: 'หมอนที่เสีย ใช้ไม่ได้' },
+            { english: 'FURNITURE', thai: 'เฟอร์นิเจอร์', type: 'ขยะทั่วไป', emoji: '💺', description: 'เก้าอี้ โต๊ะ ที่เสีย' },
+            { english: 'ROPE', thai: 'เชือก', type: 'ขยะทั่วไป', emoji: '🪢', description: 'เชือก สายรัด ที่เสีย' },
+            { english: 'WOOD', thai: 'ไม้', type: 'ขยะทั่วไป', emoji: '🪵', description: 'ไม้เหลือใช้ ชิ้นเล็ก' },
+            { english: 'MIRROR', thai: 'กระจก', type: 'ขยะทั่วไป', emoji: '🪞', description: 'กระจก กระจกเงา ที่แตก' },
+        ];
+
+        // ====== ตัวแปร ======
+        let currentIndex = 0;
+        let learned = [];
+
+        // ====== ฟังก์ชัน ======
+
+        function startGame() {
+            currentIndex = 0;
+            learned = [];
+            
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('endScreen').classList.add('hidden');
+
+            showVocab();
+        }
+
+        function showVocab() {
+            if (currentIndex >= vocabularyData.length) {
+                endGame();
+                return;
+            }
+
+            const vocab = vocabularyData[currentIndex];
+            document.getElementById('vocabEmoji').textContent = vocab.emoji;
+            document.getElementById('vocabEnglish').textContent = vocab.english;
+            document.getElementById('vocabType').textContent = vocab.type;
+            document.getElementById('vocabDescription').textContent = '👁️ คลิกปุ่มเพื่อดูคำอธิบาย';
+            document.getElementById('vocabDescription').style.opacity = '0.5';
+
+            updateProgress();
+            updateVocabList();
+        }
+
+        function showDescription() {
+            const vocab = vocabularyData[currentIndex];
+            document.getElementById('vocabDescription').textContent = vocab.description;
+            document.getElementById('vocabDescription').style.opacity = '1';
+        }
+
+        function pronunciation() {
+            const vocab = vocabularyData[currentIndex];
+            // ใช้ Web Speech API
+            const utterance = new SpeechSynthesisUtterance(vocab.english);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function nextVocab() {
+            const vocab = vocabularyData[currentIndex];
+            if (!learned.includes(currentIndex)) {
+                learned.push(currentIndex);
+            }
+            currentIndex++;
+            showVocab();
+        }
+
+        function updateProgress() {
+            const percentage = ((currentIndex + 1) / vocabularyData.length) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = (currentIndex + 1) + ' / ' + vocabularyData.length;
+        }
+
+        function updateVocabList() {
+            const listContent = document.getElementById('vocabListContent');
+            let html = '';
+
+            for (let i = 0; i <= currentIndex && i < vocabularyData.length; i++) {
+                const vocab = vocabularyData[i];
+                html += `
+                    <div class="vocab-item">
+                        <strong>${vocab.emoji} ${vocab.english}</strong> (${vocab.thai})
+                        <span style="display: block; margin-top: 5px;">📝 ${vocab.description}</span>
+                    </div>
+                `;
+            }
+
+            listContent.innerHTML = html;
+            listContent.scrollTop = listContent.scrollHeight;
+        }
+
+        function endGame() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('endScreen').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            startGame();
+        }
+    </script>
+</body>
+</html>
