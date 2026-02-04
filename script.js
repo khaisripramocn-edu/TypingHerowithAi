@@ -102,7 +102,7 @@ function checkAdminLogin() {
         renderWordBank();
         renderStats();
     } else {
-        alert("❌ รหัสผิดนะจ๊ะ (ใบ้: 1234)");
+        alert("❌ รหัสผิดนะจ๊ะ ");
     }
 }
 
@@ -426,3 +426,4 @@ function saveAsImage() {
         saveBtn.disabled = false;
     });
 }
+
